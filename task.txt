@@ -1,0 +1,10 @@
+tasks to be done
+1. draw canvas
+2. draw rectangle 
+3. add actionListener on rectangle and draw rectangle again
+4. load image on the rectangle depending upon the imagesize.
+
+Algorithm for drawing image :
+1. get the image size
+2. calculate the image the lenth and height of the rectangle.
+3. display the number of image based on the rectangle size.

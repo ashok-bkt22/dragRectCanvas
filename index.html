@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <style type="text/css">
+    	.mousedown-on-floor{
+    		cursor: pointer;
+    	}
+    </style>
+  </head>
+  <body>  
+  	<div>
+		<canvas id="floorplan-canvas" width="1024" height="600" style="border:1px solid #d3d3d3;">
+			<p>Your browser does not support html5(canvas). Please upgrade to the latest version of the browser.</p>
+		</canvas>
+
+	</div>
+	<script type="text/javascript">
+		var floorCanvas = document.getElementById('floorplan-canvas'),
+		floor = {
+			floorCoordinateX : 100,
+			floorCoordinateY : 100,	
+			floorWidth : 100,
+			floorHeight : 100
+		},
+
+		floorCoordinateX = 100,
+		floorCoordinateY = 100,	
+		floorWidth = 100,
+		floorHeight = 100,
+		
+		floorMousePointX,
+		floorMousePointY,
+		circleRadius = 5,
+		circleTopRightClicked = false,
+		context = floorCanvas.getContext('2d');
+
+
+
+		function init(){
+			floorCanvas.addEventListener("mousedown", mouseDownFloor, false);
+			floorCanvas.addEventListener("mousemove", mouseMoveFloor, false);
+			floorCanvas.addEventListener("mouseup", mouseUpFloor, false);
+			drawFloor();
+		}
+
+		function mouseDownFloor(e){
+			e.preventDefault();
+			var mousePosition = getMousePosition(e);
+			var a = (floorCoordinateX + floorWidth) - mousePosition.x;
+			var b = floorCoordinateY - mousePosition.y;
+			var c = Math.sqrt( a*a + b*b );
+			console.log(c);
+			if(c < 5){
+				circleTopRightClicked = true;
+				//console.log("tp");
+			}
+			
+			
+		}
+
+		function mouseMoveFloor(e){
+			if(circleTopRightClicked){
+				var mousePosition = getMousePosition(e);
+				context.clearRect(0, 0, floorCanvas.width, floorCanvas.height);
+				floorWidth = floorCoordinateX + mousePosition.x;
+				floorHeight = floorCoordinateY + mousePosition.y;
+				drawFloor();
+				//console.log('x ' + mousePosition.x + " " + 'y ' + mousePosition.y);
+			}
+			
+		}
+
+		function mouseUpFloor(e){
+			circleTopRightClicked = false;
+		}
+		
+		function getMousePosition(e){
+				
+			return {
+				x : e.clientX - floorCanvas.getBoundingClientRect().left,
+				y : e.clientY - floorCanvas.getBoundingClientRect().top
+			}
+			
+		}
+
+		function checkCircleClicked(){
+			
+		}
+		function drawFloor(){
+			context.rect(floorCoordinateX, floorCoordinateY, floorWidth, floorHeight);
+			context.stroke();
+			// draw circle handler for mouse events
+			drawCircle(floorCoordinateX, floorCoordinateY);
+			drawCircle(floorCoordinateX, floorCoordinateY + floorHeight);
+			drawCircle(floorCoordinateX + floorWidth, floorCoordinateY);
+			drawCircle(floorCoordinateX + floorWidth, floorCoordinateY + floorHeight);
+			
+		}
+		
+
+		function drawCircle(coordinateX, coordinateY){
+			context.fillStyle = "#000000";
+	    	context.beginPath();
+			context.arc(coordinateX, coordinateY, circleRadius, 0, 2 * Math.PI);
+			context.fill();
+		}
+
+		// main function begins here
+		init();
+
+
+
+	</script>
+  </body>
+</html>
