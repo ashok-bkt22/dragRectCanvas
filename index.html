@@ -16,23 +16,18 @@
 
 	</div>
 	<script type="text/javascript">
-		var floorCanvas = document.getElementById('floorplan-canvas'),
-		floor = {
-			floorCoordinateX : 100,
-			floorCoordinateY : 100,	
-			floorWidth : 100,
-			floorHeight : 100
-		},
-
+		var floorCanvas = document.getElementById('floorplan-canvas'),		
 		floorCoordinateX = 100,
 		floorCoordinateY = 100,	
 		floorWidth = 100,
-		floorHeight = 100,
-		
+		floorHeight = 100,		
 		floorMousePointX,
 		floorMousePointY,
 		circleRadius = 5,
 		circleTopRightClicked = false,
+		circleTopLeftClicked = false,
+		circleBottomRightClicked = false,
+		circleBottomLeftClicked = false,
 		context = floorCanvas.getContext('2d');
 
 
@@ -49,8 +44,7 @@
 			var mousePosition = getMousePosition(e);
 			var a = (floorCoordinateX + floorWidth) - mousePosition.x;
 			var b = floorCoordinateY - mousePosition.y;
-			var c = Math.sqrt( a*a + b*b );
-			console.log(c);
+			var c = Math.sqrt( a*a + b*b );			
 			if(c < 5){
 				circleTopRightClicked = true;
 				//console.log("tp");
@@ -60,19 +54,29 @@
 		}
 
 		function mouseMoveFloor(e){
-			if(circleTopRightClicked){
-				var mousePosition = getMousePosition(e);
-				context.clearRect(0, 0, floorCanvas.width, floorCanvas.height);
+			var mousePosition = getMousePosition(e);
+			if(circleTopRightClicked){				
 				floorWidth = floorCoordinateX + mousePosition.x;
-				floorHeight = floorCoordinateY + mousePosition.y;
-				drawFloor();
+				floorHeight = floorCoordinateY + mousePosition.y;				
 				//console.log('x ' + mousePosition.x + " " + 'y ' + mousePosition.y);
+			}else if(circleBottomRightClicked){
+
+			}else if(circleTopLeftClicked){
+
+			}else if(circleBottomLeftClicked){
+
 			}
+			
+			context.clearRect(0, 0, floorCanvas.width, floorCanvas.height);
+			drawFloor();
 			
 		}
 
 		function mouseUpFloor(e){
-			circleTopRightClicked = false;
+			circleTopRightClicked = false,
+			circleTopLeftClicked = false,
+			circleBottomLeftClicked = false,
+			circleBottomRightClicked = false;
 		}
 		
 		function getMousePosition(e){
