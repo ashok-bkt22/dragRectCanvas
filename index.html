@@ -15,12 +15,12 @@
 		</canvas>
 
 	</div>
-	<script type="text/javascript">
+	<script type="text/javascript">	
 		var floorCanvas = document.getElementById('floorplan-canvas'),		
 		floorCoordinateX = 100,
 		floorCoordinateY = 100,	
-		floorWidth = 100,
-		floorHeight = 100,		
+		floorWidth = 500,
+		floorHeight = 500,		
 		floorMousePointX,
 		floorMousePointY,
 		circleRadius = 5,
@@ -30,24 +30,36 @@
 		circleBottomLeftClicked = false,
 		context = floorCanvas.getContext('2d');
 
+		var floorImageObj  = new Image();
+		
+		floorImageObj.src = 'http://www.html5canvastutorials.com/demos/assets/darth-vader.jpg';
 
 
+		// program starts here 
+		// add the mouse listner on mouse down up and drag
 		function init(){
 			floorCanvas.addEventListener("mousedown", mouseDownFloor, false);
 			floorCanvas.addEventListener("mousemove", mouseMoveFloor, false);
 			floorCanvas.addEventListener("mouseup", mouseUpFloor, false);
 			drawFloor();
+
 		}
 
+		// get the coordinate  x and y point on mouse down 
+		// and check for circle handle click 
 		function mouseDownFloor(e){
 			e.preventDefault();
-			var mousePosition = getMousePosition(e);
-			var a = (floorCoordinateX + floorWidth) - mousePosition.x;
-			var b = floorCoordinateY - mousePosition.y;
-			var c = Math.sqrt( a*a + b*b );			
-			if(c < 5){
+			var mousePosition = getMousePosition(e);	
+			// check for top right circle handle click								
+			if(checkCircleClicked((floorCoordinateX + floorWidth) - mousePosition.x, floorCoordinateY - mousePosition.y) < circleRadius){
 				circleTopRightClicked = true;
-				//console.log("tp");
+				
+			}else if(checkCircleClicked((floorCoordinateX + floorWidth) - mousePosition.x, (floorCoordinateY + floorHeight) - mousePosition.y) < circleRadius){
+				circleBottomRightClicked = true;
+			}else if(checkCircleClicked((floorCoordinateX) - mousePosition.x, floorCoordinateY - mousePosition.y)){
+				circleTopLeftClicked = true;
+			}else if(checkCircleClicked(floorCoordinateX - mousePosition.x, (floorCoordinateY + floorHeight)- mousePosition.y)){
+				circleBottomLeftClicked = true;
 			}
 			
 			
@@ -57,18 +69,23 @@
 			var mousePosition = getMousePosition(e);
 			if(circleTopRightClicked){				
 				floorWidth = floorCoordinateX + mousePosition.x;
-				floorHeight = floorCoordinateY + mousePosition.y;				
+				floorHeight = floorCoordinateY + mousePosition.y;	
+				context.clearRect(0, 0, floorCanvas.width, floorCanvas.height);
+				drawFloor();			
 				//console.log('x ' + mousePosition.x + " " + 'y ' + mousePosition.y);
 			}else if(circleBottomRightClicked){
+				floorWidth = floorCoordinateX + mousePosition.x;
+				floorHeight = floorCoordinateY + mousePosition.y;	
+				context.clearRect(0, 0, floorCanvas.width, floorCanvas.height);
+				drawFloor();
 
 			}else if(circleTopLeftClicked){
-
+				
 			}else if(circleBottomLeftClicked){
 
 			}
 			
-			context.clearRect(0, 0, floorCanvas.width, floorCanvas.height);
-			drawFloor();
+			
 			
 		}
 
@@ -88,17 +105,31 @@
 			
 		}
 
-		function checkCircleClicked(){
-			
+		function checkCircleClicked(a, b){
+			return Math.sqrt( a*a + b*b );	
 		}
 		function drawFloor(){
 			context.rect(floorCoordinateX, floorCoordinateY, floorWidth, floorHeight);
 			context.stroke();
 			// draw circle handler for mouse events
-			drawCircle(floorCoordinateX, floorCoordinateY);
-			drawCircle(floorCoordinateX, floorCoordinateY + floorHeight);
+			//drawCircle(floorCoordinateX, floorCoordinateY);
+			//drawCircle(floorCoordinateX, floorCoordinateY + floorHeight);
 			drawCircle(floorCoordinateX + floorWidth, floorCoordinateY);
 			drawCircle(floorCoordinateX + floorWidth, floorCoordinateY + floorHeight);
+			
+			//var numberOfImages = Math.floor((floorWidth*floorHeight)/(floorImageObj.width*floorImageObj.height));
+
+			var numberOfColumn = Math.floor(floorWidth/floorImageObj.width);
+			var numberOfRow = Math.floor(floorHeight/floorImageObj.height);
+
+			if(numberOfRow >=1 &&  numberOfColumn >=1){
+				for(var i = 0 ; i < numberOfColumn; i++){
+					for(var j =0; j  < numberOfRow; j++)
+						context.drawImage(floorImageObj,floorCoordinateX+floorImageObj.width, floorCoordinateY);
+				}
+			}
+
+			
 			
 		}
 		
